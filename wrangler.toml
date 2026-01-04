@@ -1,6 +1,7 @@
-# Wrangler configuration for WordPress Meta Trac MCP Server
+# Wrangler configuration for WordPress Trac MCP Server
+# Supports all WordPress.org Trac instances
 
-name = "mcp-server-wporg-meta-trac-staging"
+name = "mcp-server-wporg-trac-staging"
 main = "src/index.ts"
 compatibility_date = "2024-09-23"
 compatibility_flags = ["nodejs_compat"]
@@ -9,20 +10,50 @@ compatibility_flags = ["nodejs_compat"]
 # [build]
 # command = "npm run build"
 
-# Environment variables (if needed)
+# Environment variables - default to meta for this deployment
 [vars]
 ENVIRONMENT = "development"
 TRAC_INSTANCE = "meta"
 
-# Production environment for Core Trac
-[env.production]
-name = "wordpress-trac-mcp-server-prod"
+# ============================================================
+# Production environments for each WordPress.org Trac instance
+# Deploy with: npm run deploy:<instance>
+# ============================================================
+
+# Core Trac - WordPress core development
+[env.core]
+name = "mcp-server-wporg-core-trac"
 vars = { ENVIRONMENT = "production", TRAC_INSTANCE = "core" }
 
-# Meta Trac environment
+# Meta Trac - WordPress.org infrastructure
 [env.meta]
-name = "wordpress-meta-trac-mcp-server"
+name = "mcp-server-wporg-meta-trac"
 vars = { ENVIRONMENT = "production", TRAC_INSTANCE = "meta" }
+
+# Plugins Trac - Plugin directory issues
+[env.plugins]
+name = "mcp-server-wporg-plugins-trac"
+vars = { ENVIRONMENT = "production", TRAC_INSTANCE = "plugins" }
+
+# Themes Trac - Theme directory reviews
+[env.themes]
+name = "mcp-server-wporg-themes-trac"
+vars = { ENVIRONMENT = "production", TRAC_INSTANCE = "themes" }
+
+# bbPress Trac - bbPress forum software
+[env.bbpress]
+name = "mcp-server-wporg-bbpress-trac"
+vars = { ENVIRONMENT = "production", TRAC_INSTANCE = "bbpress" }
+
+# BuddyPress Trac - BuddyPress social networking
+[env.buddypress]
+name = "mcp-server-wporg-buddypress-trac"
+vars = { ENVIRONMENT = "production", TRAC_INSTANCE = "buddypress" }
+
+# GlotPress Trac - Translation platform
+[env.glotpress]
+name = "mcp-server-wporg-glotpress-trac"
+vars = { ENVIRONMENT = "production", TRAC_INSTANCE = "glotpress" }
 
 # Specify the account ID and zone ID if needed
 # account_id = "your-account-id"

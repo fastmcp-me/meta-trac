@@ -1,18 +1,20 @@
 /**
  * Trac Instance Configuration
- * Supports multiple WordPress Trac instances (Core, Meta, etc.)
+ * Supports all WordPress.org Trac instances
  */
+
+export type TracInstanceType = 'core' | 'meta' | 'plugins' | 'themes' | 'bbpress' | 'buddypress' | 'glotpress';
 
 export interface TracInstanceConfig {
   baseUrl: string;
   instanceName: string;
-  instanceType: 'core' | 'meta';
+  instanceType: TracInstanceType;
   displayName: string;
 }
 
 export interface Env {
   ENVIRONMENT?: string;
-  TRAC_INSTANCE?: 'core' | 'meta';
+  TRAC_INSTANCE?: TracInstanceType;
   TRAC_BASE_URL?: string;
   CF_VERSION_METADATA?: {
     id: string;
@@ -21,7 +23,7 @@ export interface Env {
   };
 }
 
-const INSTANCE_CONFIGS: Record<'core' | 'meta', Omit<TracInstanceConfig, 'baseUrl'> & { defaultBaseUrl: string }> = {
+const INSTANCE_CONFIGS: Record<TracInstanceType, Omit<TracInstanceConfig, 'baseUrl'> & { defaultBaseUrl: string }> = {
   core: {
     defaultBaseUrl: 'https://core.trac.wordpress.org',
     instanceName: 'WordPress Core Trac',
@@ -34,11 +36,41 @@ const INSTANCE_CONFIGS: Record<'core' | 'meta', Omit<TracInstanceConfig, 'baseUr
     instanceType: 'meta',
     displayName: 'WordPress.org Infrastructure',
   },
+  plugins: {
+    defaultBaseUrl: 'https://plugins.trac.wordpress.org',
+    instanceName: 'WordPress Plugins Trac',
+    instanceType: 'plugins',
+    displayName: 'Plugin Directory',
+  },
+  themes: {
+    defaultBaseUrl: 'https://themes.trac.wordpress.org',
+    instanceName: 'WordPress Themes Trac',
+    instanceType: 'themes',
+    displayName: 'Theme Directory',
+  },
+  bbpress: {
+    defaultBaseUrl: 'https://bbpress.trac.wordpress.org',
+    instanceName: 'bbPress Trac',
+    instanceType: 'bbpress',
+    displayName: 'bbPress',
+  },
+  buddypress: {
+    defaultBaseUrl: 'https://buddypress.trac.wordpress.org',
+    instanceName: 'BuddyPress Trac',
+    instanceType: 'buddypress',
+    displayName: 'BuddyPress',
+  },
+  glotpress: {
+    defaultBaseUrl: 'https://glotpress.trac.wordpress.org',
+    instanceName: 'GlotPress Trac',
+    instanceType: 'glotpress',
+    displayName: 'GlotPress',
+  },
 };
 
 export function getTracConfig(env: Env): TracInstanceConfig {
-  const instanceType = env.TRAC_INSTANCE || 'core';
-  const instanceConfig = INSTANCE_CONFIGS[instanceType] || INSTANCE_CONFIGS.core;
+  const instanceType = env.TRAC_INSTANCE || 'meta';
+  const instanceConfig = INSTANCE_CONFIGS[instanceType] || INSTANCE_CONFIGS.meta;
 
   return {
     baseUrl: env.TRAC_BASE_URL || instanceConfig.defaultBaseUrl,
@@ -46,6 +78,17 @@ export function getTracConfig(env: Env): TracInstanceConfig {
     instanceType: instanceConfig.instanceType,
     displayName: instanceConfig.displayName,
   };
+}
+
+/**
+ * Get all available Trac instances
+ */
+export function getAllTracInstances(): Array<{ type: TracInstanceType; name: string; url: string }> {
+  return Object.entries(INSTANCE_CONFIGS).map(([type, config]) => ({
+    type: type as TracInstanceType,
+    name: config.instanceName,
+    url: config.defaultBaseUrl,
+  }));
 }
 
 /**

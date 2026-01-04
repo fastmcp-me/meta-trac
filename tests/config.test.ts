@@ -1,9 +1,19 @@
 import { describe, it, expect } from 'vitest';
-import { getTracConfig, buildTracUrl, type Env } from '../src/config';
+import { getTracConfig, buildTracUrl, getAllTracInstances, type Env } from '../src/config';
 
 describe('getTracConfig', () => {
-  it('returns core config by default', () => {
+  it('returns meta config by default', () => {
     const env: Env = {};
+    const config = getTracConfig(env);
+
+    expect(config.instanceType).toBe('meta');
+    expect(config.baseUrl).toBe('https://meta.trac.wordpress.org');
+    expect(config.instanceName).toBe('WordPress Meta Trac');
+    expect(config.displayName).toBe('WordPress.org Infrastructure');
+  });
+
+  it('returns core config when TRAC_INSTANCE is core', () => {
+    const env: Env = { TRAC_INSTANCE: 'core' };
     const config = getTracConfig(env);
 
     expect(config.instanceType).toBe('core');
@@ -12,14 +22,45 @@ describe('getTracConfig', () => {
     expect(config.displayName).toBe('WordPress Core');
   });
 
-  it('returns meta config when TRAC_INSTANCE is meta', () => {
-    const env: Env = { TRAC_INSTANCE: 'meta' };
+  it('returns plugins config', () => {
+    const env: Env = { TRAC_INSTANCE: 'plugins' };
     const config = getTracConfig(env);
 
-    expect(config.instanceType).toBe('meta');
-    expect(config.baseUrl).toBe('https://meta.trac.wordpress.org');
-    expect(config.instanceName).toBe('WordPress Meta Trac');
-    expect(config.displayName).toBe('WordPress.org Infrastructure');
+    expect(config.instanceType).toBe('plugins');
+    expect(config.baseUrl).toBe('https://plugins.trac.wordpress.org');
+    expect(config.instanceName).toBe('WordPress Plugins Trac');
+  });
+
+  it('returns themes config', () => {
+    const env: Env = { TRAC_INSTANCE: 'themes' };
+    const config = getTracConfig(env);
+
+    expect(config.instanceType).toBe('themes');
+    expect(config.baseUrl).toBe('https://themes.trac.wordpress.org');
+  });
+
+  it('returns bbpress config', () => {
+    const env: Env = { TRAC_INSTANCE: 'bbpress' };
+    const config = getTracConfig(env);
+
+    expect(config.instanceType).toBe('bbpress');
+    expect(config.baseUrl).toBe('https://bbpress.trac.wordpress.org');
+  });
+
+  it('returns buddypress config', () => {
+    const env: Env = { TRAC_INSTANCE: 'buddypress' };
+    const config = getTracConfig(env);
+
+    expect(config.instanceType).toBe('buddypress');
+    expect(config.baseUrl).toBe('https://buddypress.trac.wordpress.org');
+  });
+
+  it('returns glotpress config', () => {
+    const env: Env = { TRAC_INSTANCE: 'glotpress' };
+    const config = getTracConfig(env);
+
+    expect(config.instanceType).toBe('glotpress');
+    expect(config.baseUrl).toBe('https://glotpress.trac.wordpress.org');
   });
 
   it('allows TRAC_BASE_URL override', () => {
@@ -31,6 +72,20 @@ describe('getTracConfig', () => {
 
     expect(config.baseUrl).toBe('https://custom.trac.example.org');
     expect(config.instanceType).toBe('meta');
+  });
+});
+
+describe('getAllTracInstances', () => {
+  it('returns all 7 trac instances', () => {
+    const instances = getAllTracInstances();
+    expect(instances).toHaveLength(7);
+    expect(instances.map(i => i.type)).toContain('core');
+    expect(instances.map(i => i.type)).toContain('meta');
+    expect(instances.map(i => i.type)).toContain('plugins');
+    expect(instances.map(i => i.type)).toContain('themes');
+    expect(instances.map(i => i.type)).toContain('bbpress');
+    expect(instances.map(i => i.type)).toContain('buddypress');
+    expect(instances.map(i => i.type)).toContain('glotpress');
   });
 });
 
