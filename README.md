@@ -1,106 +1,109 @@
 # WordPress Trac MCP Server
 
-A Model Context Protocol (MCP) server that provides AI assistants with comprehensive access to **all WordPress.org Trac instances**. Built with TypeScript and deployed on Cloudflare Workers.
+Search and explore all WordPress.org Trac issue trackers directly from Claude, ChatGPT, or any AI assistant that supports MCP (Model Context Protocol).
+
+**No coding required to use this** - just add the server URLs to your AI assistant config.
 
 Based on [trac-mcp](https://github.com/Jameswlepage/trac-mcp) by James LePage.
 
-## Supported Trac Instances
+---
 
-| Instance | URL | Description | Deploy Command |
-|----------|-----|-------------|----------------|
-| **Core** | https://core.trac.wordpress.org | WordPress core development | `npm run deploy:core` |
-| **Meta** | https://meta.trac.wordpress.org | WordPress.org infrastructure | `npm run deploy:meta` |
-| **Plugins** | https://plugins.trac.wordpress.org | Plugin directory issues | `npm run deploy:plugins` |
-| **Themes** | https://themes.trac.wordpress.org | Theme reviews & directory | `npm run deploy:themes` |
-| **bbPress** | https://bbpress.trac.wordpress.org | bbPress forum software | `npm run deploy:bbpress` |
-| **BuddyPress** | https://buddypress.trac.wordpress.org | BuddyPress social networking | `npm run deploy:buddypress` |
-| **GlotPress** | https://glotpress.trac.wordpress.org | Translation platform | `npm run deploy:glotpress` |
+## Quick Start (No Coding Required)
 
-## Live Demo
+### For Claude Desktop Users
 
-**Meta Trac**: https://mcp-server-wporg-meta-trac-staging.meta-trac-wordpress.workers.dev
+1. Open your Claude Desktop config file:
+   - **Mac**: `~/Library/Application Support/Claude/claude_desktop_config.json`
+   - **Windows**: `%APPDATA%\Claude\claude_desktop_config.json`
 
-## Features
-
-- **Multi-Instance Support**: Single codebase supports all 7 WordPress.org Trac instances
-- Search tickets by keywords, components, or status
-- Get detailed ticket information including descriptions and metadata
-- Access changeset information with full diff content
-- Monitor recent activity via timeline
-- Retrieve project metadata (components, milestones, priorities)
-- **Intelligent Query Routing**: Automatically detects ticket numbers, revisions, and keywords
-- **Dual Interface**: Standard MCP + ChatGPT Deep Research support
-
-## Available Tools
-
-### searchTickets
-Search for tickets by keyword or filter expression.
+2. Add the WordPress Trac servers to the `mcpServers` section:
 
 ```json
 {
-  "tool": "searchTickets",
-  "args": {
-    "query": "accessibility",
-    "limit": 10,
-    "status": "open"
+  "mcpServers": {
+    "wordpress-core-trac": {
+      "command": "npx",
+      "args": ["mcp-remote", "https://mcp-server-wporg-core-trac.meta-trac-wordpress.workers.dev/mcp"]
+    },
+    "wordpress-meta-trac": {
+      "command": "npx",
+      "args": ["mcp-remote", "https://mcp-server-wporg-meta-trac.meta-trac-wordpress.workers.dev/mcp"]
+    },
+    "wordpress-plugins-trac": {
+      "command": "npx",
+      "args": ["mcp-remote", "https://mcp-server-wporg-plugins-trac.meta-trac-wordpress.workers.dev/mcp"]
+    },
+    "wordpress-themes-trac": {
+      "command": "npx",
+      "args": ["mcp-remote", "https://mcp-server-wporg-themes-trac.meta-trac-wordpress.workers.dev/mcp"]
+    },
+    "wordpress-bbpress-trac": {
+      "command": "npx",
+      "args": ["mcp-remote", "https://mcp-server-wporg-bbpress-trac.meta-trac-wordpress.workers.dev/mcp"]
+    },
+    "wordpress-buddypress-trac": {
+      "command": "npx",
+      "args": ["mcp-remote", "https://mcp-server-wporg-buddypress-trac.meta-trac-wordpress.workers.dev/mcp"]
+    },
+    "wordpress-glotpress-trac": {
+      "command": "npx",
+      "args": ["mcp-remote", "https://mcp-server-wporg-glotpress-trac.meta-trac-wordpress.workers.dev/mcp"]
+    }
   }
 }
 ```
 
-### getTicket
-Get detailed information about a specific ticket.
+3. **Restart Claude Desktop**
 
-```json
-{
-  "tool": "getTicket",
-  "args": {
-    "id": 12345,
-    "includeComments": true
-  }
-}
-```
+4. You can now ask Claude things like:
+   - "Search Core Trac for accessibility issues"
+   - "Find recent plugin directory tickets"
+   - "Show me ticket #12345 from Meta Trac"
+   - "What's the latest activity on BuddyPress Trac?"
 
-### getChangeset
-Get information about a code changeset/commit.
+### For ChatGPT Users
 
-```json
-{
-  "tool": "getChangeset",
-  "args": {
-    "revision": 58000,
-    "includeDiff": true
-  }
-}
-```
+1. Open ChatGPT Settings → Connectors tab
+2. Add Server → Import remote MCP server
+3. Use any of these URLs:
+   - Core: `https://mcp-server-wporg-core-trac.meta-trac-wordpress.workers.dev/mcp/chatgpt`
+   - Meta: `https://mcp-server-wporg-meta-trac.meta-trac-wordpress.workers.dev/mcp/chatgpt`
+   - Plugins: `https://mcp-server-wporg-plugins-trac.meta-trac-wordpress.workers.dev/mcp/chatgpt`
+   - Themes: `https://mcp-server-wporg-themes-trac.meta-trac-wordpress.workers.dev/mcp/chatgpt`
+   - bbPress: `https://mcp-server-wporg-bbpress-trac.meta-trac-wordpress.workers.dev/mcp/chatgpt`
+   - BuddyPress: `https://mcp-server-wporg-buddypress-trac.meta-trac-wordpress.workers.dev/mcp/chatgpt`
+   - GlotPress: `https://mcp-server-wporg-glotpress-trac.meta-trac-wordpress.workers.dev/mcp/chatgpt`
+4. Enable in Composer → Deep Research tool
 
-### getTimeline
-Get recent activity from the Trac timeline.
+---
 
-```json
-{
-  "tool": "getTimeline",
-  "args": {
-    "days": 7,
-    "limit": 20
-  }
-}
-```
+## What You Can Search
 
-### getTracInfo
-Get Trac metadata (milestones, priorities, types, statuses).
+| Trac Instance | What It Tracks | Live URL |
+|---------------|----------------|----------|
+| **Core** | WordPress core bugs, features, enhancements | [core.trac.wordpress.org](https://core.trac.wordpress.org) |
+| **Meta** | WordPress.org website and infrastructure | [meta.trac.wordpress.org](https://meta.trac.wordpress.org) |
+| **Plugins** | Plugin directory issues and reviews | [plugins.trac.wordpress.org](https://plugins.trac.wordpress.org) |
+| **Themes** | Theme reviews and directory | [themes.trac.wordpress.org](https://themes.trac.wordpress.org) |
+| **bbPress** | bbPress forum software | [bbpress.trac.wordpress.org](https://bbpress.trac.wordpress.org) |
+| **BuddyPress** | BuddyPress social networking plugin | [buddypress.trac.wordpress.org](https://buddypress.trac.wordpress.org) |
+| **GlotPress** | Translation platform | [glotpress.trac.wordpress.org](https://glotpress.trac.wordpress.org) |
 
-```json
-{
-  "tool": "getTracInfo",
-  "args": {
-    "type": "milestones"
-  }
-}
-```
+## Available Commands
 
-## Installation
+Once connected, you can ask your AI assistant to:
 
-### Deploy to Cloudflare Workers
+- **Search tickets**: "Search for REST API issues" or "Find tickets about block editor"
+- **Get ticket details**: "Show me ticket #58000" or "What's the status of ticket 12345?"
+- **View changesets**: "Show changeset r58000" or "What changed in revision 55000?"
+- **Check timeline**: "What happened on Core Trac this week?"
+- **Get project info**: "List the milestones for WordPress 6.7"
+
+---
+
+## For Developers
+
+### Deploy Your Own Instance
 
 ```bash
 # Clone the repository
@@ -113,16 +116,16 @@ npm install
 # Login to Cloudflare
 npx wrangler login
 
-# Deploy a specific instance
-npm run deploy:meta      # Meta Trac
-npm run deploy:core      # Core Trac
-npm run deploy:plugins   # Plugins Trac
-npm run deploy:themes    # Themes Trac
-npm run deploy:bbpress   # bbPress Trac
+# Deploy specific instances
+npm run deploy:core       # Core Trac
+npm run deploy:meta       # Meta Trac
+npm run deploy:plugins    # Plugins Trac
+npm run deploy:themes     # Themes Trac
+npm run deploy:bbpress    # bbPress Trac
 npm run deploy:buddypress # BuddyPress Trac
-npm run deploy:glotpress # GlotPress Trac
+npm run deploy:glotpress  # GlotPress Trac
 
-# Or deploy ALL instances
+# Or deploy ALL at once
 npm run deploy:all
 ```
 
@@ -133,77 +136,32 @@ npm run deploy:all
 | `TRAC_INSTANCE` | `core`, `meta`, `plugins`, `themes`, `bbpress`, `buddypress`, `glotpress` | `meta` | Which Trac instance |
 | `TRAC_BASE_URL` | URL | (auto) | Override the base URL |
 
-## Connect to AI Assistant
-
-### Claude Desktop
-
-Add to your `claude_desktop_config.json`:
-
-```json
-{
-  "mcpServers": {
-    "wordpress-core-trac": {
-      "command": "npx",
-      "args": ["mcp-remote", "https://your-core-trac-url/mcp"]
-    },
-    "wordpress-meta-trac": {
-      "command": "npx",
-      "args": ["mcp-remote", "https://mcp-server-wporg-meta-trac-staging.meta-trac-wordpress.workers.dev/mcp"]
-    },
-    "wordpress-plugins-trac": {
-      "command": "npx",
-      "args": ["mcp-remote", "https://your-plugins-trac-url/mcp"]
-    }
-  }
-}
-```
-
-### ChatGPT Deep Research
-
-1. Open ChatGPT Settings → Connectors tab
-2. Add Server → Import remote MCP server:
-   ```
-   https://your-worker-url/mcp/chatgpt
-   ```
-3. Enable in Composer → Deep Research tool
-
-## Development
-
 ### Local Development
 
 ```bash
-# Start dev server (uses TRAC_INSTANCE from wrangler.toml)
+# Start dev server
 npm run dev
 
 # Test with MCP Inspector
 npx @modelcontextprotocol/inspector http://localhost:8787/mcp
-```
 
-### Testing
-
-```bash
-# Type check
-npm run type-check
-
-# Run unit tests
+# Run tests
 npm run test:unit
 
-# Health check
-curl https://your-worker-url/health
+# Type check
+npm run type-check
 ```
 
-### Test Queries
+### API Testing
 
 ```bash
-# Search Meta Trac
-curl -X POST 'https://mcp-server-wporg-meta-trac-staging.meta-trac-wordpress.workers.dev/mcp' \
-  -H 'Content-Type: application/json' \
-  -d '{"jsonrpc":"2.0","method":"tools/call","params":{"name":"searchTickets","arguments":{"query":"plugin directory","limit":5}},"id":1}'
+# Health check
+curl https://mcp-server-wporg-core-trac.meta-trac-wordpress.workers.dev/health
 
-# Get specific ticket
-curl -X POST 'https://your-worker-url/mcp' \
+# Search tickets
+curl -X POST 'https://mcp-server-wporg-core-trac.meta-trac-wordpress.workers.dev/mcp' \
   -H 'Content-Type: application/json' \
-  -d '{"jsonrpc":"2.0","method":"tools/call","params":{"name":"getTicket","arguments":{"id":100}},"id":1}'
+  -d '{"jsonrpc":"2.0","method":"tools/call","params":{"name":"searchTickets","arguments":{"query":"accessibility","limit":5}},"id":1}'
 ```
 
 ## Architecture
@@ -217,7 +175,7 @@ curl -X POST 'https://your-worker-url/mcp' \
 
 - Comment history not available via CSV API (visit ticket URL for full discussion)
 - Components list requires sampling tickets to extract values
-- Each Trac instance needs separate deployment (or use `deploy:all`)
+- Each Trac instance is a separate deployment
 
 ## License
 
