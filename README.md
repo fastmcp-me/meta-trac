@@ -174,6 +174,10 @@ vars = { TRAC_INSTANCE = "core" }
 vars = { TRAC_INSTANCE = "meta" }
 ```
 
+## Live Demo
+
+**URL**: https://mcp-server-wporg-meta-trac-staging.meta-trac-wordpress.workers.dev
+
 ## Connect to AI Assistant
 
 ### Standard MCP (Claude Desktop, etc.)
@@ -185,7 +189,7 @@ Add to your `claude_desktop_config.json`:
   "mcpServers": {
     "meta-trac": {
       "command": "npx",
-      "args": ["mcp-remote", "https://your-worker-url/mcp"]
+      "args": ["mcp-remote", "https://mcp-server-wporg-meta-trac-staging.meta-trac-wordpress.workers.dev/mcp"]
     }
   }
 }
@@ -196,7 +200,7 @@ Add to your `claude_desktop_config.json`:
 1. Open ChatGPT Settings -> Connectors tab
 2. Add Server -> Import remote MCP server:
    ```
-   https://your-worker-url/mcp/chatgpt
+   https://mcp-server-wporg-meta-trac-staging.meta-trac-wordpress.workers.dev/mcp/chatgpt
    ```
 3. Enable in Composer -> Deep Research tool
 4. Add as research source if needed
